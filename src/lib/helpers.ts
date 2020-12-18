@@ -17,8 +17,6 @@ const exportableFileTypes = [
 export function isDefaultlyExported(path: string) {
     const foundFileType = exportableFileTypes.find(fType => fs.existsSync(path + fType))
 
-    console.log('found', foundFileType)
-
     const sourceCode = fs.readFileSync(foundFileType ? (path + foundFileType) : path, {encoding: 'utf8'})
     const sourceFile = getSourceFile(sourceCode)
 
