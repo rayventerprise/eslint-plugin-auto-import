@@ -1,7 +1,7 @@
-import autoImportRule from "./rules/auto-import";
+import AutoImportRule from "./rules/auto-import";
 
 module.exports = {
   rules: {
-    'auto-import-ts': autoImportRule.create,
+    'auto-import-ts': AutoImportRule,
   }
 }
