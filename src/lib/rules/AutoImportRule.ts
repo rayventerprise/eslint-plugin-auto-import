@@ -17,7 +17,7 @@ const AutoImportRule: Rule.RuleModule = {
                         type: "boolean"
                     }
                 },
-                additionalProperties: false
+                additionalProperties: true
             }
         ]
     },

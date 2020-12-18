@@ -1,4 +1,4 @@
-import AutoImportRule from "./rules/auto-import";
+import AutoImportRule from "./rules/AutoImportRule";
 
 module.exports = {
   rules: {

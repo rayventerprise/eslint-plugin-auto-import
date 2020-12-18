@@ -8,7 +8,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/auto-import"),
+var rule = require("../../../lib/rules/AutoImportRule"),
 
     RuleTester = require("eslint").RuleTester;
 
