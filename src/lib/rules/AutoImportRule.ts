@@ -9,6 +9,8 @@ const AutoImportRule: Rule.RuleModule = {
             recommended: true
         },
 
+        fixable: "code",
+
         schema: [
             {
                 type: "object",
