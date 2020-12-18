@@ -7,8 +7,8 @@
     "eslintplugin",
     "eslint-plugin"
   ],
-  "author": "Kris Zyp",
-  "main": "dist/lib/index.ts",
+  "author": "Ray",
+  "main": "dist/lib/index.js",
   "scripts": {
     "test": "mocha dist/tests --recursive",
     "build": "rm -rf ./dist && tsc -p tsconfig.json",
