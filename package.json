@@ -1,5 +1,5 @@
 {
-  "name": "eslint-plugin-auto-import",
+  "name": "eslint-plugin-auto-import-ts",
   "version": "0.1.0",
   "description": "Automatically update imports",
   "keywords": [
@@ -15,6 +15,7 @@
     "prepare": "npm run build"
   },
   "dependencies": {
+    "eslint-plugin-auto-import": "rayventerprise/eslint-plugin-auto-import-ts",
     "ts-morph": "^9.1.0"
   },
   "devDependencies": {

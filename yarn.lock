@@ -317,7 +317,7 @@ escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
 
 eslint-plugin-auto-import@rayventerprise/eslint-plugin-auto-import-ts:
   version "0.1.0"
-  resolved "https://codeload.github.com/rayventerprise/eslint-plugin-auto-import-ts/tar.gz/c521ff91db2faa74b9eabdb5b831e4a94c73b4c2"
+  resolved "https://codeload.github.com/rayventerprise/eslint-plugin-auto-import-ts/tar.gz/45d5fa22a4b1a33813f4eaaca3e61532e5f3bc61"
   dependencies:
     ts-morph "^9.1.0"
 
