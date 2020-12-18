@@ -1,6 +1,6 @@
 import fs from "fs";
 import pathModule from "path";
-import tsMorph from "ts-morph";
+import * as tsMorph from "ts-morph";
 import {Rule, Scope} from "eslint";
 
 function getSourceFile(sourceCode: string) {
