@@ -10,9 +10,12 @@
   "author": "Kris Zyp",
   "main": "dist/lib/index.ts",
   "scripts": {
-    "test": "mocha dist/tests --recursive"
+    "test": "mocha dist/tests --recursive",
+    "build": "rm -rf ./dist && tsc -p tsconfig.json",
+    "prepare": "npm run build"
   },
   "dependencies": {
+    "eslint-plugin-auto-import": "rayventerprise/eslint-plugin-auto-import-ts",
     "ts-morph": "^9.1.0"
   },
   "devDependencies": {
