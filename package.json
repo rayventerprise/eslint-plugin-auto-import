@@ -15,7 +15,6 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "eslint-plugin-auto-import": "rayventerprise/eslint-plugin-auto-import-ts",
     "ts-morph": "^9.1.0"
   },
   "devDependencies": {
