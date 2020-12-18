@@ -8,8 +8,18 @@ function getSourceFile(sourceCode: string) {
     return codeProject.createSourceFile('main.tsx', sourceCode);
 }
 
+const exportableFileTypes = [
+    '.js',
+    '.ts',
+    '.tsx'
+]
+
 export function isDefaultlyExported(path: string) {
-    const sourceCode = fs.readFileSync(path, {encoding: 'utf8'})
+    const foundFileType = exportableFileTypes.find(fType => fs.existsSync(path + fType))
+
+    console.log('found', foundFileType)
+
+    const sourceCode = fs.readFileSync(foundFileType ? (path + foundFileType) : path, {encoding: 'utf8'})
     const sourceFile = getSourceFile(sourceCode)
 
     return sourceFile.getClasses().find(c => c.isDefaultExport()) !== undefined
@@ -134,7 +144,10 @@ export function createFixAction(dependencies: Set<any>, globalScope: Scope.Scope
                 }
             }
 
-            isNotDefaultExport = !isDefaultlyExported(pathModule.dirname(filename) + foundModule.replace('./', '/') + '.ts')
+            const currentDirectory = pathModule.dirname(filename)
+            const absoluteModulePath = pathModule.resolve(currentDirectory, foundModule)
+
+            isNotDefaultExport = !isDefaultlyExported(absoluteModulePath)
 
             var importStatement = (isNotDefaultExport ?
                 'import { ' + undefinedIndentifier + ' }' :
