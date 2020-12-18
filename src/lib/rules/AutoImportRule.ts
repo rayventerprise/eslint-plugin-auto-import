@@ -1,4 +1,4 @@
-import {createFixAction, hasTypeOfOperator, isStaticRequire} from "../helpers";
+import {createFixAction, hasTypeOfOperator} from "../helpers";
 import {Rule} from "eslint";
 import useDependencyTracker from "../useDependencyTracker";
 

@@ -2,6 +2,7 @@ import fs from "fs";
 import pathModule from "path";
 import * as tsMorph from "ts-morph";
 import {Rule, Scope} from "eslint";
+import {SyntaxKind, VariableStatement} from "ts-morph";
 
 function getSourceFile(sourceCode: string) {
     const codeProject = new tsMorph.Project({useInMemoryFileSystem: true});
@@ -14,13 +15,42 @@ const exportableFileTypes = [
     '.tsx'
 ]
 
-export function isDefaultlyExported(path: string) {
-    const foundFileType = exportableFileTypes.find(fType => fs.existsSync(path + fType))
+export function isDefaultlyExported(sourceFilePath: string, moduleName: string) {
+    const foundFileType = exportableFileTypes.find(fType => fs.existsSync(sourceFilePath + fType))
 
-    const sourceCode = fs.readFileSync(foundFileType ? (path + foundFileType) : path, {encoding: 'utf8'})
+    const sourceCode = fs.readFileSync(foundFileType ? (sourceFilePath + foundFileType) : sourceFilePath, {encoding: 'utf8'})
     const sourceFile = getSourceFile(sourceCode)
 
-    return sourceFile.getClasses().find(c => c.isDefaultExport()) !== undefined
+    const defaultExportDeclaration = sourceFile.getExportedDeclarations().get('default')
+
+    if ( !defaultExportDeclaration ) {
+        return false;
+    }
+
+    return guessName(defaultExportDeclaration[0]) === moduleName
+}
+
+
+export function guessName(node: any) {
+    if (!node) {
+        return 'undefined';
+    }
+
+    let name = '';
+
+    if (node instanceof VariableStatement) {
+        name = node.getDeclarationList().getDescendantsOfKind(SyntaxKind.VariableDeclaration)[0].getName();
+    }
+
+    if (!name && node.getName) {
+        name = node.getName();
+    }
+
+    if (!name && node.getFullText) {
+        name = node.getFullText();
+    }
+
+    return name ?? 'None';
 }
 
 export function isStaticRequire(node: any) {
@@ -145,15 +175,16 @@ export function createFixAction(dependencies: Set<any>, globalScope: Scope.Scope
             const currentDirectory = pathModule.dirname(filename)
             const absoluteModulePath = pathModule.resolve(currentDirectory, foundModule)
 
-            isNotDefaultExport = !isDefaultlyExported(absoluteModulePath)
+            const newImportName = undefinedIndentifier
+            const isNewImportDefaultExport = isDefaultlyExported(absoluteModulePath, newImportName)
 
-            var importStatement = (isNotDefaultExport ?
-                'import { ' + undefinedIndentifier + ' }' :
-                'import ' + undefinedIndentifier) + " from '" + foundModule + "'"
+            var importStatement =
+                `import ${isNewImportDefaultExport ? `{ ${newImportName} }` : newImportName} from '${foundModule}'`
 
             if (importDeclaration) {
                 return fixer.insertTextAfter(importDeclaration, '\n' + importStatement)
             }
+
             return fixer.insertTextAfterRange([0, 0], importStatement + (dependencies.size === 0 ? '\n\n' : ''))
         }
     }
