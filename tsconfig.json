@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es5",
     "module": "commonjs",
-    "removeComments": false,
+    "lib": ["es2017"],
     "outDir": "./dist",
     "allowJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "declaration": true,
-    "forceConsistentCasingInFileNames": true
   },
   "include": ["src"]
 }
