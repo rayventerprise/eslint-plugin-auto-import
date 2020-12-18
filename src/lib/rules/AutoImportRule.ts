@@ -1,5 +1,6 @@
 import {createFixAction, hasTypeOfOperator, isStaticRequire} from "../helpers";
 import {Rule} from "eslint";
+import useDependencyTracker from "../useDependencyTracker";
 
 const AutoImportRule: Rule.RuleModule = {
     meta: {
@@ -8,9 +9,7 @@ const AutoImportRule: Rule.RuleModule = {
             category: "Variables",
             recommended: true
         },
-
         fixable: "code",
-
         schema: [
             {
                 type: "object",
@@ -24,47 +23,33 @@ const AutoImportRule: Rule.RuleModule = {
         ]
     },
 
-    create: function(context) {
-        var options = context.options[0];
-        var considerTypeOf = options && options.typeof === true || false;
-      const dependencies = new Set() // keep track of dependencies
-      let lastNode // keep track of the last node to report on
+    create: function (context) {
+        const options = context.options[0];
+        const considerTypeOf = options && options.typeof === true || false;
 
+        const {dependencies, trackDependencies} = useDependencyTracker()
 
         return {
-          ImportDeclaration(node) {
-            dependencies.add(node.source.value)
-            lastNode = node.source
-          },
+            ...trackDependencies,
+            "Program:exit": function (/* node */) {
+                const globalScope = context.getScope();
+                const options = context.options[0];
+                const fixed: any = {};
 
-          MemberExpression: function (node) {
-
-          },
-
-          CallExpression(node) {
-            if (isStaticRequire(node)) {
-              const [ requirePath ] = node.arguments as any
-              dependencies.add(requirePath.value)
-              lastNode = node
-            }
-          },
-            "Program:exit": function(/* node */) {
-                var globalScope = context.getScope()
-                var options = context.options[0]
-                var fixed: any = {}
-
-                globalScope.through.forEach(function(ref) {
-                    var identifier = ref.identifier as any
+                globalScope.through.forEach(function (ref) {
+                    const identifier = ref.identifier as any;
 
                     if (!considerTypeOf && hasTypeOfOperator(identifier)) {
                         return;
                     }
-                    var undefinedIndentifier = identifier.name
+
+                    const missingIdentifier = identifier.name;
+
                     context.report({
                         node: identifier,
                         message: '{{name}} is not defined.',
                         data: identifier as any,
-                        fix: createFixAction(dependencies, globalScope, context, options, fixed, undefinedIndentifier, identifier)
+                        fix: createFixAction(dependencies, globalScope, context, options, fixed, missingIdentifier, identifier)
                     });
                 });
             }
